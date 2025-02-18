@@ -1,10 +1,10 @@
-package team.project.redboost.Controllers;
+package team.project.redboost.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team.project.redboost.Models.RendezVous;
-import team.project.redboost.Service.RendezVousService;
+import team.project.redboost.entities.RendezVous;
+import team.project.redboost.services.RendezVousService;
 
 import java.util.List;
 import java.util.Optional;

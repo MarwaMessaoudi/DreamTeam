@@ -1,4 +1,4 @@
-package team.project.redboost.Models;
+package team.project.redboost.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

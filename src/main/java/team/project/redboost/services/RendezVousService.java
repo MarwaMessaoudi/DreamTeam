@@ -1,9 +1,9 @@
-package team.project.redboost.Service;
+package team.project.redboost.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import team.project.redboost.Models.RendezVous;
-import team.project.redboost.Repository.RendezVousRepository;
+import team.project.redboost.entities.RendezVous;
+import team.project.redboost.repositories.RendezVousRepository;
 
 import java.util.List;
 import java.util.Optional;
