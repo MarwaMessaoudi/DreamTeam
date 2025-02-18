@@ -20,12 +20,19 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
+                        // Swagger UI et API docs
                         .requestMatchers("/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**").permitAll()
-                        .anyRequest().permitAll()
+                        // API Rendez-vous
+                        .requestMatchers("/api/rendezvous/**").permitAll()
+                        .requestMatchers("/api/v1/coachlist/**").permitAll()
+
+                        // Autres endpoints
+                        .anyRequest().authenticated()
                 )
                 .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.disable())
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
 
         return http.build();
