@@ -1,29 +1,37 @@
-package team.project.redboost.Models;
-
-
+package team.project.redboost.entities;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "events")
-public class Event {
+@Getter
+@Setter
+@Table(name = "meetings")
+public class Meeting {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String eventIdGoogle; // ID dans Google Calendar
     private String title;
+
     private LocalDateTime startTime;
+
     private LocalDateTime endTime;
 
+
     @ManyToOne
-    @JoinColumn(name = "meeting_id")
-    private Meeting meeting;
+    @JoinColumn(name = "host_id", nullable = false)
+    private user host;
 
-    public Event() {}
+    @OneToOne(mappedBy = "meeting", cascade = CascadeType.ALL)
+    private Note note;
+    @OneToOne(mappedBy = "meeting", cascade = CascadeType.ALL)
+    private Record record;
 
-    // Getters & Setters
+
 
     public Long getId() {
         return id;
@@ -31,14 +39,6 @@ public class Event {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getEventIdGoogle() {
-        return eventIdGoogle;
-    }
-
-    public void setEventIdGoogle(String eventIdGoogle) {
-        this.eventIdGoogle = eventIdGoogle;
     }
 
     public String getTitle() {
@@ -65,12 +65,28 @@ public class Event {
         this.endTime = endTime;
     }
 
-    public Meeting getMeeting() {
-        return meeting;
+
+    public user getHost() {
+        return host;
     }
 
-    public void setMeeting(Meeting meeting) {
-        this.meeting = meeting;
+    public void setHost(user host) {
+        this.host = host;
+    }
+
+    public Note getNote() {
+        return note;
+    }
+
+    public void setNote(Note note) {
+        this.note = note;
+    }
+
+    public Record getRecord() {
+        return record;
+    }
+
+    public void setRecord(Record record) {
+        this.record = record;
     }
 }
-
