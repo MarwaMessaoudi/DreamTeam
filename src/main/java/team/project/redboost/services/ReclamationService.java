@@ -6,16 +6,12 @@ import team.project.redboost.entities.Reclamation;
 import team.project.redboost.repositories.ReclamationRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ReclamationService {
 
     @Autowired
     private ReclamationRepository reclamationRepository;
-
-    // ID utilisateur statique (par exemple, ID 1 pour un utilisateur spécifique)
-    private static final Long USER_ID = 1L;
 
     // Récupérer toutes les réclamations
     public List<Reclamation> getAllReclamations() {
@@ -24,24 +20,39 @@ public class ReclamationService {
 
     // Récupérer une réclamation par son ID
     public Reclamation getReclamationById(Long id) {
-        Optional<Reclamation> reclamation = reclamationRepository.findById(id);
-        return reclamation.orElse(null);  // Retourne null si non trouvé
+        return reclamationRepository.findById(id).orElse(null);
     }
 
     // Créer une nouvelle réclamation
     public Reclamation createReclamation(Reclamation reclamation) {
-        // Assigner l'ID utilisateur statique
-        reclamation.setIdUtilisateur(USER_ID);  // Utiliser l'ID utilisateur fixe
+        reclamation.setIdUtilisateur(1L); // ID utilisateur fixe à 1
+        if (reclamation.getReponses() != null) {
+            reclamation.getReponses().forEach(reponse -> reponse.setReclamation(reclamation));
+        }
         return reclamationRepository.save(reclamation);
     }
 
-    // Mettre à jour une réclamation existante
-    public Reclamation updateReclamation(Long id, Reclamation reclamation) {
-        if (reclamationRepository.existsById(id)) {
-            reclamation.setIdReclamation(id);
-            return reclamationRepository.save(reclamation);
+    // Mettre à jour une réclamation
+    public Reclamation updateReclamation(Long id, Reclamation reclamationDetails) {
+        Reclamation reclamation = reclamationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Réclamation non trouvée"));
+
+        reclamation.setNom(reclamationDetails.getNom());
+        reclamation.setEmail(reclamationDetails.getEmail());
+        reclamation.setSujet(reclamationDetails.getSujet());
+        reclamation.setDescription(reclamationDetails.getDescription());
+        reclamation.setCategorie(reclamationDetails.getCategorie());
+        reclamation.setStatut(reclamationDetails.getStatut());
+        reclamation.setDate(reclamationDetails.getDate());
+
+        // Mise à jour des réponses
+        reclamation.getReponses().clear();
+        if (reclamationDetails.getReponses() != null) {
+            reclamationDetails.getReponses().forEach(reponse -> reponse.setReclamation(reclamation));
+            reclamation.getReponses().addAll(reclamationDetails.getReponses());
         }
-        return null;  // Retourne null si la réclamation n'existe pas
+
+        return reclamationRepository.save(reclamation);
     }
 
     // Supprimer une réclamation
@@ -50,6 +61,6 @@ public class ReclamationService {
             reclamationRepository.deleteById(id);
             return true;
         }
-        return false;  // Retourne false si la réclamation n'existe pas
+        return false;
     }
 }

@@ -1,7 +1,6 @@
 package team.project.redboost.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.project.redboost.entities.ReponseReclamation;
@@ -14,54 +13,35 @@ import java.util.List;
 public class ReponseReclamationController {
 
     @Autowired
-    private ReponseReclamationService reponseReclamationService;
+    private ReponseReclamationService reponseService;
 
-    // Récupérer toutes les réponses d'une réclamation donnée
+    // Récupérer toutes les réponses pour une réclamation
     @GetMapping
     public List<ReponseReclamation> getReponsesByReclamation(@PathVariable Long idReclamation) {
-        return reponseReclamationService.getReponsesByReclamation(idReclamation);
+        return reponseService.getReponsesByReclamation(idReclamation);
     }
 
-    // Récupérer une réponse par son ID
-    @GetMapping("/{id}")
-    public ResponseEntity<ReponseReclamation> getReponseById(@PathVariable Long id) {
-        ReponseReclamation reponse = reponseReclamationService.getReponseById(id);
-        if (reponse != null) {
-            return ResponseEntity.ok(reponse);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
-
-    // Créer une nouvelle réponse pour une réclamation donnée
-    @PostMapping("/createReponse")
-    public ResponseEntity<ReponseReclamation> createReponse(@PathVariable Long idReclamation, @RequestBody ReponseReclamation reponseReclamation) {
-        ReponseReclamation savedReponse = reponseReclamationService.createReponse(idReclamation, reponseReclamation);
-        if (savedReponse != null) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedReponse);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    // Ajouter une nouvelle réponse
+    @PostMapping
+    public ResponseEntity<ReponseReclamation> createReponse(
+            @PathVariable Long idReclamation,
+            @RequestBody ReponseReclamation reponse) {
+        ReponseReclamation saved = reponseService.createReponse(idReclamation, reponse);
+        return saved != null ? ResponseEntity.ok(saved) : ResponseEntity.notFound().build();
     }
 
     // Mettre à jour une réponse existante
-    @PutMapping("updateReponse/{id}")
-    public ResponseEntity<ReponseReclamation> updateReponse(@PathVariable Long id, @RequestBody ReponseReclamation reponseReclamation) {
-        ReponseReclamation updatedReponse = reponseReclamationService.updateReponse(id, reponseReclamation);
-        if (updatedReponse != null) {
-            return ResponseEntity.ok(updatedReponse);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    @PutMapping("/{idReponse}")
+    public ResponseEntity<ReponseReclamation> updateReponse(
+            @PathVariable Long idReponse,
+            @RequestBody ReponseReclamation updatedReponse) {
+        ReponseReclamation updated = reponseService.updateReponse(idReponse, updatedReponse);
+        return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
     }
 
     // Supprimer une réponse
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReponse(@PathVariable Long id) {
-        if (reponseReclamationService.deleteReponse(id)) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    @DeleteMapping("/{idReponse}")
+    public ResponseEntity<Void> deleteReponse(@PathVariable Long idReponse) {
+        return reponseService.deleteReponse(idReponse) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 }
