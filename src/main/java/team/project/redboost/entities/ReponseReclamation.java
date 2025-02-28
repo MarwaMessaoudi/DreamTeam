@@ -1,35 +1,41 @@
 package team.project.redboost.entities;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class ReponseReclamation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idReponse;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "idReclamation", nullable = false)
+    @JoinColumn(name = "idReclamation")
     private Reclamation reclamation;
 
-    private String message;
+    @Column(columnDefinition = "TEXT")
+    private String contenu;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dateReponse;
+    @Enumerated(EnumType.STRING)
+    private SenderType sender;
 
-    // Getter pour renvoyer uniquement l'idReclamation
-    public Long getIdReclamation() {
-        return this.reclamation != null ? this.reclamation.getIdReclamation() : null;
+    @Column(name = "user_id")
+    private Long userId;
+
+    private LocalDateTime dateCreation = LocalDateTime.now();
+
+    // Enum pour le type d'expéditeur
+    public enum SenderType {
+        USER,
+        ADMIN
     }
 }

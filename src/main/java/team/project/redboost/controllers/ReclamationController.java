@@ -1,8 +1,10 @@
 package team.project.redboost.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import team.project.redboost.entities.Reclamation;
 import team.project.redboost.services.ReclamationService;
 
@@ -10,13 +12,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/reclamations")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ReclamationController {
 
     @Autowired
     private ReclamationService reclamationService;
 
     // Récupérer toutes les réclamations
-    @GetMapping
+    @GetMapping("/getAllReclamations")
     public List<Reclamation> getAllReclamations() {
         return reclamationService.getAllReclamations();
     }
@@ -29,8 +32,12 @@ public class ReclamationController {
     }
 
     // Créer une nouvelle réclamation
-    @PostMapping
-    public ResponseEntity<Reclamation> createReclamation(@RequestBody Reclamation reclamation) {
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<Reclamation> createReclamation(
+            @RequestPart("reclamation") Reclamation reclamation,
+            @RequestPart(value = "files", required = false) List<MultipartFile> files) {
+        // Traitement de la réclamation et des fichiers
+        // Par exemple, enregistrement des fichiers et mise à jour de l'entité réclamation
         return ResponseEntity.ok(reclamationService.createReclamation(reclamation));
     }
 

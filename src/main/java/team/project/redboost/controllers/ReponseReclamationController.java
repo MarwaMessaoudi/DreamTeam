@@ -1,6 +1,6 @@
 package team.project.redboost.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.project.redboost.entities.ReponseReclamation;
@@ -10,10 +10,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/reclamations/{idReclamation}/reponses")
+@CrossOrigin(origins = "http://localhost:4200")
+@RequiredArgsConstructor
 public class ReponseReclamationController {
 
-    @Autowired
-    private ReponseReclamationService reponseService;
+    private final ReponseReclamationService reponseService;
 
     // Récupérer toutes les réponses pour une réclamation
     @GetMapping
@@ -21,7 +22,27 @@ public class ReponseReclamationController {
         return reponseService.getReponsesByReclamation(idReclamation);
     }
 
-    // Ajouter une nouvelle réponse
+    // Ajouter une nouvelle réponse utilisateur
+    @PostMapping("/user/{userId}")
+    public ResponseEntity<ReponseReclamation> createUserReponse(
+            @PathVariable Long idReclamation,
+            @PathVariable Long userId,
+            @RequestBody ReponseReclamation reponse) {
+        ReponseReclamation saved = reponseService.createUserReponse(idReclamation, reponse, userId);
+        return saved != null ? ResponseEntity.ok(saved) : ResponseEntity.notFound().build();
+    }
+
+    // Ajouter une nouvelle réponse admin
+    @PostMapping("/admin/{adminId}")
+    public ResponseEntity<ReponseReclamation> createAdminReponse(
+            @PathVariable Long idReclamation,
+            @PathVariable Long adminId,
+            @RequestBody ReponseReclamation reponse) {
+        ReponseReclamation saved = reponseService.createAdminReponse(idReclamation, reponse, adminId);
+        return saved != null ? ResponseEntity.ok(saved) : ResponseEntity.notFound().build();
+    }
+
+    // Méthode générique (pour la compatibilité avec le code existant)
     @PostMapping
     public ResponseEntity<ReponseReclamation> createReponse(
             @PathVariable Long idReclamation,
